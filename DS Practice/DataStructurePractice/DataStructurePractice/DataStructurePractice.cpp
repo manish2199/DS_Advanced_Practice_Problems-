@@ -1199,37 +1199,11 @@ bool IsEven(int number)
 }
 
 
-   int GetLastNegativeIndex(vector<int> vec)
-   {
-    int s = 0;
-    int e = vec.size()-1;
-   int mid;
-    while(s<=e)
-    {
-      mid = s + ( e-s)/2;
 
-      if( mid-1 >= 0 && vec.at(mid-1) < 0 && vec.at(mid) >= 0 )
-      {
-          return mid-1;
-      }
-        
-      if( mid-1 >= 0 && vec.at(mid-1) < 0 && vec.at(mid) < 0 )
-      {
-          s = mid +1;
-      }
-        
-      if( mid-1 >= 0 && vec.at(mid-1) >= 0 && vec.at(mid) >= 0 )
-      {
-         e = mid;      
-      }
-    }
-    return 0;
-   }
-
-    // Sort Swuared Array 
-    vector<int> sortedSquares(vector<int>& nums)
-    {
-        // if array contains only positive elements
+// Sort Squared Array 
+vector<int> sortedSquares(vector<int>& nums)
+{
+    // if array contains only positive elements
     if(nums.at(0) >= 0 && nums.at(nums.size()-1) >= 0 )
     {
         for(int i=0; i<nums.size(); i++)
@@ -1262,59 +1236,103 @@ bool IsEven(int number)
     }
 
     // if array contains both negative and positive
-    int lastNegIndex = GetLastNegativeIndex(nums);
-    int firstPosIndex = lastNegIndex+1;
-     
-    // nums.push_back(0);
-        
-    int negativeSquare = 0;
-    while( lastNegIndex >= 0  && firstPosIndex <= nums.size()-1 )
-    {
-        negativeSquare = nums.at(lastNegIndex) * nums.at(lastNegIndex);
+    // vector<int> ansVector;
+    int n = nums.size();
+    int* ansArray = new int[n];
 
-        
-            while( firstPosIndex < nums.size() && abs(nums[firstPosIndex]) < abs(nums[lastNegIndex]) )
+    
+    int ptr1 = 0;
+    int ptr2 = nums.size()-1;
+
+    int last = nums.size()-1;
+    
+    while(ptr1 <= ptr2)
+    {
+        if(abs(nums.at(ptr1)) < abs(nums.at(ptr2)) )
+        {
+            ansArray[last] = pow(nums.at(ptr2),2);
+            ptr2--;
+            last--;
+        }
+        else
+        {
+            ansArray[last] = pow(nums.at(ptr1),2);
+            ptr1++;
+            last--;
+        }
+    }
+
+    vector<int> ans;
+    for(int i=0; i<n; i++)
+    {
+        ans.push_back(ansArray[i]);
+    }
+
+    delete[] ansArray;
+    return ans;   
+}
+
+
+// Moore's Voting Algorithm to Find Majority Element 
+int majorityElement(vector<int> vec)
+{
+    // Find The Element which in majority
+    int maj = 0; int count = 1;
+    for(int i=0; i<vec.size(); i++)
+    {
+        if(vec.at(maj) == vec.at(i))
+        {
+            count ++;
+        }
+        else
+        {
+            count--;
+        }
+
+        if(count == 0)
+        {
+            maj = i;
+            count = 1;
+        }
+    }
+
+    // Check If that element is in majority ( > size/2 ) or not
+    count = 1;
+    for(int i=0; i<vec.size(); i++)
+    {
+        if(vec.at(i) == vec.at(maj))
+        {
+            count++;
+            if(count > vec.size()/2)
             {
-                nums[firstPosIndex] = nums.at(firstPosIndex)*nums.at(firstPosIndex);
-                firstPosIndex++;
+                return vec.at(i);
             }
-            
-        
-            if(firstPosIndex < nums.size())
-            {
-              nums.insert(nums.begin()+firstPosIndex,negativeSquare);  
-            }
-            else
-            {
-                nums.push_back(negativeSquare);
-            }    
-        
-            nums.erase(nums.begin()+lastNegIndex);
-            
-            lastNegIndex--;
+        }
     }
+    return -1; 
+}
 
-    int size = nums.size();
-    while(firstPosIndex < size)
+
+int MaxMinSumDiff(vector<int> vec, int m)
+{
+   sort(vec.begin(),vec.end());
+    int minSum=0,maxSum = 0; 
+
+    for(int i=0,j=vec.size()-1; i<vec.size()-m; i++,j--)
     {
-        nums[firstPosIndex] =  pow(nums.at(firstPosIndex),2);
-        firstPosIndex++;
+        minSum += vec.at(i);
+        maxSum += vec.at(j);
     }
-
-    while(lastNegIndex >= 0)
-    {
-        negativeSquare = nums.at(lastNegIndex) * nums.at(lastNegIndex);
-        nums.push_back(negativeSquare);
-        nums.erase(nums.begin()+lastNegIndex);
-        lastNegIndex--;
-    }
-    return nums;   
-    }
-
+    return maxSum-minSum;
+}
 
 
 int main()
 {
+    vector<int> vec { 5,3,1,2,4 };
+
+    cout<<MaxMinSumDiff(vec,1);
+    
 }
 
 

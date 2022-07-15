@@ -1327,12 +1327,146 @@ int MaxMinSumDiff(vector<int> vec, int m)
 }
 
 
-int main()
-{
-    vector<int> vec { 5,3,1,2,4 };
 
-    cout<<MaxMinSumDiff(vec,1);
+// Trie
+
+class Node
+{
+public :
+     unordered_map<char,Node*> umap; 
+     bool DoesStringOver;
+};
+
+class Trie
+{
+private:
+    Node* rootNode;
     
+public:
+    Trie() 
+    {
+        rootNode = NULL;
+    }
+    
+    void insert(string word) 
+    {
+        // if trie is empty
+        Node* tempNode = new Node();
+        if(rootNode == NULL)
+        {
+            for(int i=0; i<word.length(); i++)
+            {
+                Node* new_node = new Node();
+                
+                if( i == 0)
+                {
+                    new_node->DoesStringOver = false;
+                    new_node->umap[word[i]] = tempNode;
+                    rootNode = new_node;    
+                }
+                else
+                {
+                    Node* newTempNode = new Node();
+
+                    new_node = tempNode;
+                    
+                    tempNode = newTempNode;
+                    
+                    new_node->DoesStringOver = false;
+                    new_node->umap[word[i]] = tempNode;
+                }
+            }
+        }
+        // if trie is not empty
+        else
+        {
+            tempNode = rootNode;
+            for(int i=0; i<word.length(); i++)
+            {
+                
+                if(tempNode->umap.find(word[i]) != tempNode->umap.end() )
+                {
+                    // means current char is present move to next node
+                    tempNode = tempNode->umap[word[i]];
+                }
+                else
+                {
+                    // if(i+1 != word.length()-1)
+                    
+                    Node* newNode = new Node();  
+
+                    tempNode->umap[word[i]] = newNode;
+
+                    // if(!tempNode->DoesStringOver)
+                    // {
+                    //     tempNode->DoesStringOver = false;
+                    // }
+
+                    tempNode = newNode;
+                }
+            }
+        }
+        tempNode->DoesStringOver = true;
+    }
+
+    
+    bool search(string word) 
+    {
+        // if trie is empty
+        if( rootNode == NULL)
+        {   
+            return false;
+        }
+
+        Node* temp = rootNode;
+        bool isPresent = temp->DoesStringOver;
+        for(int i=0; i<word.length(); i++)
+        {
+            if( temp->umap.find(word[i]) == temp->umap.end() )
+            {
+                // means curr char is not present in trie
+                return false;
+            }        
+
+            temp = temp->umap[word[i]];
+            isPresent = temp->DoesStringOver;
+        }
+
+        return isPresent;
+    }
+    
+    bool startsWith(string prefix) 
+    {
+        // if trie is empty
+        if(rootNode == NULL)
+        {
+            return false;
+        }
+        
+        bool isCharPresent = true;
+        Node* temp = rootNode;
+        for(int i=0; i<prefix.length(); i++)
+        {
+            if( temp->umap.find(prefix[i]) != temp->umap.end() )
+            {
+                temp = temp->umap[prefix[i]];
+            }
+            else
+            {
+                isCharPresent = false;
+                break;
+            }
+        }
+        return  isCharPresent;
+    }
+};
+
+
+
+
+
+int main()
+{   
 }
 
 

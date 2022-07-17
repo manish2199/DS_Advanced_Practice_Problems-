@@ -1573,35 +1573,9 @@ string completeString(vector<string> a)
 }
 
 int main()
-{
-    // vector<string> vec { "p","pq","pqr","pqrs","pa","pab","pabc","pqrx","pqrxwz" };
-   
-    vector<string> vec {  "n","ni","nin","ninj","ninja","ninga"  };
-
-    // vector<string> vec {  "ab","bc"  };
-    
-    // vector<string> vec {  "g","a","ak","szhkb","hy"  };
-
-    // vector<string> vec { "kez","vfj","vfjq","vfjqo"   };
-    
-
-    string ans = completeString(vec);
-    if(ans.empty())
-    {
-        cout<<"None";
-    }
-    else
-    {
-        cout<<ans;
-    }
-    
+{   
 }
 
-
-// 2
-// 6
-// 2
-// ab bc
 
 
 

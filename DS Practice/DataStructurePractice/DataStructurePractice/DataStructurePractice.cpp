@@ -4,6 +4,7 @@
 #include <stack>
 #include <vector>
 #include<algorithm> 
+#include <iso646.h>
 #include<iterator>
 #include<sstream>  
 #include <map>
@@ -1329,7 +1330,6 @@ int MaxMinSumDiff(vector<int> vec, int m)
 
 
 // Trie
-
 class Node
 {
 public :
@@ -1390,17 +1390,10 @@ public:
                     tempNode = tempNode->umap[word[i]];
                 }
                 else
-                {
-                    // if(i+1 != word.length()-1)
-                    
+                {   
                     Node* newNode = new Node();  
 
                     tempNode->umap[word[i]] = newNode;
-
-                    // if(!tempNode->DoesStringOver)
-                    // {
-                    //     tempNode->DoesStringOver = false;
-                    // }
 
                     tempNode = newNode;
                 }
@@ -1459,15 +1452,158 @@ public:
         }
         return  isCharPresent;
     }
+
+    Node* getRootNode()
+    {
+        return rootNode;
+    }
 };
 
 
 
+bool isStringLexFirst(string str1,string str2)
+{
+    for(int i=0; i<str1.length(); i++)
+    {
+        if(str1[i] < str2[i] )
+        {
+            return true;
+        }
+        else if(str1[i] > str2[i] )
+        {
+            return false;
+        }
+    }
+    // means both string are same;
+    return true;
+}
 
+//  Complete Longest String Problem  ( Difficulty Level - Hard )  link = https://www.codingninjas.com/codestudio/problems/complete-string_2687860?leftPanelTab=1  
+ void getLongestCompleteString(string foundedString,string &CompleteString , Node* currNode , Node* rootNode )
+{
+    if( currNode->umap.empty() && currNode->DoesStringOver)
+    {
+        // means we found our possible ans
+        if(CompleteString.empty())
+        {
+            CompleteString = foundedString;
+            return ;
+        }
+        else
+        {
+            // check which string have greater length
+            if( foundedString.length() > CompleteString.length())
+            {
+                // ans is founded string
+                CompleteString = foundedString;
+                return;
+            }
+            else if(  foundedString.length() < CompleteString.length() )
+            {
+                // ans not neet to modify 
+                return;
+            }
+            else
+            {
+                // means both length is similar then check by lex. order 
+                if(isStringLexFirst(foundedString,CompleteString))
+                {
+                    // ans is founded string
+                    CompleteString = foundedString;
+                    return;
+                }
+                else
+                {
+                    // ans not need to modify 
+                    return;
+                }
+            }
+               
+        }
+    }
+        
+    if(!currNode->DoesStringOver && currNode != rootNode )
+    {
+        // if we encounter false then dont modify the ans
+        return;
+    }
+
+
+    // check whether to make recursion call or not
+    if(currNode->umap.size() == 1)
+    {
+        string temp = foundedString;
+        char ch = currNode->umap.begin()->first;
+        temp += ch;
+        getLongestCompleteString(temp,CompleteString,currNode->umap[ch],rootNode) ;
+    }
+    else
+    {
+        // means more than one char present at given node
+        // make recursion call to find all possible strings
+        for(auto iter = currNode->umap.begin(); iter!= currNode->umap.end(); iter++)
+        {
+            string temp1 = foundedString ;
+            char ch1 = iter->first;
+            temp1 += ch1;
+            getLongestCompleteString(temp1,CompleteString,currNode->umap[ch1],rootNode);
+        }
+    }
+}
+
+
+string completeString(vector<string> a)
+{
+    // Write your code here.
+
+    // Build the trie of given strings 
+    Trie* trie = new Trie();
+    for(int i=0; i<a.size(); i++)
+    {
+        trie->insert(a[i]);
+    }
+
+    string FoundedString = "";
+    string CompleteString;
+
+    Node* currnode = trie->getRootNode();
+    getLongestCompleteString(FoundedString,CompleteString,currnode,currnode);
+
+    return CompleteString;
+}
 
 int main()
-{   
+{
+    // vector<string> vec { "p","pq","pqr","pqrs","pa","pab","pabc","pqrx","pqrxwz" };
+   
+    vector<string> vec {  "n","ni","nin","ninj","ninja","ninga"  };
+
+    // vector<string> vec {  "ab","bc"  };
+    
+    // vector<string> vec {  "g","a","ak","szhkb","hy"  };
+
+    // vector<string> vec { "kez","vfj","vfjq","vfjqo"   };
+    
+
+    string ans = completeString(vec);
+    if(ans.empty())
+    {
+        cout<<"None";
+    }
+    else
+    {
+        cout<<ans;
+    }
+    
 }
+
+
+// 2
+// 6
+// 2
+// ab bc
+
+
 
 
 

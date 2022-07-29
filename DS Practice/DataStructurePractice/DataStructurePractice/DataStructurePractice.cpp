@@ -1571,9 +1571,6 @@ string completeString(vector<string> a)
 }
 
 
-
-
-
 // Breadth First Search To Detect The Loop inside Graph
 bool IsPresentLoop(queue<pair<int,int>> &q,int node,vector<int> adj[],vector<bool> &visited)
 {
@@ -1610,7 +1607,9 @@ bool IsPresentLoop(queue<pair<int,int>> &q,int node,vector<int> adj[],vector<boo
 }
 
 
-// Depth First Search To Detect The Loop inside Graph
+
+
+// Depth First Search To Detect The Loop inside Graph        
 void IsPresentLoop(bool &isPresent,int parentNode,int currNode,vector<int> adj[],vector<bool> &visited)
 {
     
@@ -1632,25 +1631,82 @@ void IsPresentLoop(bool &isPresent,int parentNode,int currNode,vector<int> adj[]
 }
 
 
+// Detect BiPartite by BFS                Leet Code Link -:  https://leetcode.com/problems/is-graph-bipartite/submissions/
+bool isBipartite(vector<vector<int>> &graph)
+{
+    // graph is adj list
+    bool IsBipartite = true;
+
+    // 0 = no colored and uncoloured (unvisited)  1 = black coloured  2 = white coloured
+    vector<int> Color( graph.size(),0);
+     
+    queue<int> q;
+
+    for(int i=0; i<graph.size(); i++)
+    {
+        // By BFS
+        if(Color[i] == 0)
+        {
+            
+            q.push(i);
+            Color[i] = 1;
+        
+            while (!q.empty())
+            {
+                int front = q.front();                
+                q.pop();
+                
+                for(int i=0; i<graph[front].size(); i++)
+                {
+                    if(Color[graph[front][i]] == 0 )  // means this node is unvisited
+                    {
+                        // give this node diff color than parent node
+                        if(Color[front] == 1)
+                        {
+                            Color[graph[front][i]] = 2;
+                        }
+                        if(Color[front] == 2)
+                        {
+                            Color[graph[front][i]] = 1;
+                        }
+                        q.push(graph[front][i]);
+                    }
+                    else if(Color[graph[front][i]] != 0  &&  Color[graph[front][i]] ==  Color[front] ) // means same color present which is already colored
+                    {
+                        IsBipartite = false;
+                        break;
+                    }
+                }
+                if(!IsBipartite) { break; }
+            }
+        }
+        if(!IsBipartite) { break; }
+    }
+    return IsBipartite;    
+}
+
+
+
+
 
 int main()
 {
-    vector<int> adj[8];
+    vector<vector<int>> adj { {1,3},{0,2},{1,3},{0,2} };
 
-    adj[1].push_back(2);
-    adj[2].push_back(1);
-    adj[3].push_back(2);
-    adj[2].push_back(3);
-    adj[3].push_back(4);
-    adj[4].push_back(3);
-    adj[2].push_back(5);
-    adj[5].push_back(2);
-    adj[4].push_back(5);
-    adj[5].push_back(4);
-    adj[6].push_back(5);
-    adj[5].push_back(6);
-    adj[6].push_back(7);
-    adj[7].push_back(6);
+    // adj[1].push_back(2);
+    // adj[2].push_back(1);
+    // adj[3].push_back(2);
+    // adj[2].push_back(3);
+    // adj[3].push_back(4);
+    // adj[4].push_back(3);
+    // adj[2].push_back(5);
+    // adj[5].push_back(2);
+    // adj[4].push_back(5);
+    // adj[5].push_back(4);
+    // adj[6].push_back(5);
+    // adj[5].push_back(6);
+    // adj[6].push_back(7);
+    // adj[7].push_back(6);
 
     // adj[1].push_back(2);
     // adj[2].push_back(1);
@@ -1660,28 +1716,49 @@ int main()
     // adj[6].push_back(5);
     // adj[6].push_back(7);
     // adj[7].push_back(6);
+
+    // adj[0].push_back(1);
+    // adj[1].push_back(0);
+    // adj[0].push_back(2);
+    // adj[2].push_back(0);
+    // adj[0].push_back(3);
+    // adj[3].push_back(0);
+    // adj[3].push_back(2);
+    // adj[2].push_back(3);
+    // adj[2].push_back(1);
+    // adj[1].push_back(2);
+
+
     
-
-    vector<bool> visited ( 8,false);
-
-    // queue<pair<int,int>> q;
+   cout<<isBipartite(adj);
 
 
-    bool ispresent = false;
-    for(int i=1; i<8; i++)
-    {
-        // By BFS
-        if(!visited[i])
-        {
-            IsPresentLoop(ispresent,-1,i,adj,visited);
-            if(ispresent)
-            {
-                break;
-            }
-        }
-    }
 
-    cout<<ispresent;
+
+
+
+    
+    //
+    // vector<bool> visited ( 8,false);
+    //
+    // // queue<pair<int,int>> q;
+    //
+    //
+    // bool ispresent = false;
+    // for(int i=1; i<8; i++)
+    // {
+    //     // By BFS
+    //     if(!visited[i])
+    //     {
+    //         IsPresentLoop(ispresent,-1,i,adj,visited);
+    //         if(ispresent)
+    //         {
+    //             break;
+    //         }
+    //     }
+    // }
+    //
+    // cout<<ispresent;
 }
 
 

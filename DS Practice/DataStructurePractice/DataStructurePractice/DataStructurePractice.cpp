@@ -4,15 +4,13 @@
 #include <stack>
 #include <vector>
 #include<algorithm> 
-#include <iso646.h>
-#include<iterator>
 #include<sstream>  
 #include <map>
-#include<math.h>
+#include <queue>
 #include <unordered_set>
 #include <unordered_map>
 using namespace std;
-#define Max 1000
+#define MAX 1000
 int Mem[1000];
 
 
@@ -1572,8 +1570,118 @@ string completeString(vector<string> a)
     return CompleteString;
 }
 
+
+
+
+
+// Breadth First Search To Detect The Loop inside Graph
+bool IsPresentLoop(queue<pair<int,int>> &q,int node,vector<int> adj[],vector<bool> &visited)
+{
+    bool isPresent = false;
+    
+    q.push( { node,-1 } );
+    visited[node] = true;
+
+    // First is Current Node    second is its Parent Node
+   while (!q.empty())
+   {
+       int first = q.front().first;
+       int second = q.front().second;
+       q.pop();
+
+       for(int i=0; i<adj[first].size(); i++)
+       {
+           if(!visited[adj[first][i]])
+           {
+               q.push( { adj[first][i],first} );
+               visited[adj[first][i]] = true;
+           }
+           else
+           {
+               if(adj[first][i] != second)
+               {
+                   isPresent = true;
+                   break;
+               }
+           }
+       }
+   }
+    return isPresent; 
+}
+
+
+// Depth First Search To Detect The Loop inside Graph
+void IsPresentLoop(bool &isPresent,int parentNode,int currNode,vector<int> adj[],vector<bool> &visited)
+{
+    
+    visited[currNode] = true;
+
+    for(int i=0; i<adj[currNode].size(); i++)
+    {
+        if(visited[adj[currNode][i]] && parentNode != adj[currNode][i] )
+        {
+            isPresent = true;
+            break;
+        }
+        if(visited[adj[currNode][i]])
+        {
+            continue;
+        }
+        IsPresentLoop(isPresent,currNode,adj[currNode][i],adj,visited);   
+    }
+}
+
+
+
 int main()
-{   
+{
+    vector<int> adj[8];
+
+    adj[1].push_back(2);
+    adj[2].push_back(1);
+    adj[3].push_back(2);
+    adj[2].push_back(3);
+    adj[3].push_back(4);
+    adj[4].push_back(3);
+    adj[2].push_back(5);
+    adj[5].push_back(2);
+    adj[4].push_back(5);
+    adj[5].push_back(4);
+    adj[6].push_back(5);
+    adj[5].push_back(6);
+    adj[6].push_back(7);
+    adj[7].push_back(6);
+
+    // adj[1].push_back(2);
+    // adj[2].push_back(1);
+    // adj[2].push_back(5);
+    // adj[5].push_back(2);
+    // adj[5].push_back(6);
+    // adj[6].push_back(5);
+    // adj[6].push_back(7);
+    // adj[7].push_back(6);
+    
+
+    vector<bool> visited ( 8,false);
+
+    // queue<pair<int,int>> q;
+
+
+    bool ispresent = false;
+    for(int i=1; i<8; i++)
+    {
+        // By BFS
+        if(!visited[i])
+        {
+            IsPresentLoop(ispresent,-1,i,adj,visited);
+            if(ispresent)
+            {
+                break;
+            }
+        }
+    }
+
+    cout<<ispresent;
 }
 
 

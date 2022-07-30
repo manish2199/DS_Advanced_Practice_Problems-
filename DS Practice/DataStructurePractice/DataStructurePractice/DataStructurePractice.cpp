@@ -1686,6 +1686,70 @@ bool isBipartite(vector<vector<int>> &graph)
 }
 
 
+// Detect BiPartite By DFS        //  Problem Link - https://leetcode.com/problems/is-graph-bipartite/submissions/
+
+void DetectBipartiteByDFS(bool &isBiPartite,int parentNode,int currNode,vector<vector<int>> adj,vector<int> &Color)
+{
+    if(parentNode == -1) // Means we are on Root node 
+        {
+        Color[currNode] = 1; 
+        }
+    else if( Color[parentNode] == 1 )
+    {
+        Color[currNode] = 2;
+    }
+    else if ( Color[parentNode] == 2)
+    {
+        Color[currNode] = 1;
+    }
+
+    
+    for( int i=0; i < adj[currNode].size(); i++)
+    {
+        if( (Color[adj[currNode][i]] != 0 && Color[currNode] != 0 ) && Color[adj[currNode][i]] == Color[currNode] ) // means already visited and colored 
+        {
+            // stop
+            isBiPartite = false;
+            break;
+        }
+        if(Color[adj[currNode][i]] == 0 ) // means uncoloured
+        {
+            // do recursion
+            DetectBipartiteByDFS(isBiPartite,currNode,adj[currNode][i],adj,Color);
+        }
+
+        if(!isBiPartite)
+        {
+            return;
+        }
+    }
+}
+bool IsBipartite(vector<vector<int>> &graph)
+{
+    bool IsBipartite = true;
+
+    vector<int> Color( graph.size(),0);
+
+    for(int i =0; i<graph.size(); i++)
+    {
+
+        if(Color[i] == 0)
+        {
+            DetectBipartiteByDFS(IsBipartite,-1,i,graph,Color);
+
+            if(!IsBipartite)
+            {
+                break;   
+            }
+        }
+    }
+
+    return  IsBipartite;
+}
+
+
+
+
 
 
 
@@ -1730,7 +1794,7 @@ int main()
 
 
     
-   cout<<isBipartite(adj);
+   cout<<IsBipartite(adj);
 
 
 

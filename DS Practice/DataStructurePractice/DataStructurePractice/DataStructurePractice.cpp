@@ -4,6 +4,7 @@
 #include <stack>
 #include <vector>
 #include<algorithm> 
+#include <complex.h>
 #include<sstream>  
 #include <map>
 #include <queue>
@@ -1687,7 +1688,6 @@ bool isBipartite(vector<vector<int>> &graph)
 
 
 // Detect BiPartite By DFS        //  Problem Link - https://leetcode.com/problems/is-graph-bipartite/submissions/
-
 void DetectBipartiteByDFS(bool &isBiPartite,int parentNode,int currNode,vector<vector<int>> adj,vector<int> &Color)
 {
     if(parentNode == -1) // Means we are on Root node 
@@ -1748,6 +1748,103 @@ bool IsBipartite(vector<vector<int>> &graph)
 }
 
 
+// Quick Sort
+void QuickSort(vector<int> &vec,int low,int high)
+{
+    if( low >= high)
+    {
+        return;
+    }
+
+    int s = low;
+    int e = high;
+    int pivot = s + ( e - s )/2;
+
+    while(s <= e)
+    {
+        while ( vec.at(s) < vec.at(pivot) )
+        {
+            s++;
+        }
+
+        while( vec.at(e) > vec.at(pivot) )
+        {
+            e--;
+        }
+
+        if( s<= e )
+        {
+           swap(vec.at(s),vec.at(e));
+            s++;
+            e--;
+        }
+    }
+
+    QuickSort(vec,low,e);
+    QuickSort(vec,s,high);
+}
+
+
+
+
+
+// Dynamic Programming ===========================================================================================
+// Count Ways To Reach Destination
+int CountWays(int currentStep,int nthStep,vector<int> &DP)
+{
+    if( currentStep == nthStep )
+    {
+        return 1; 
+    }
+
+    if( currentStep > nthStep )
+    {
+        return 0;
+    }
+    
+    if(DP[currentStep] != 0 )
+    {
+        // mean ans is present
+        return DP[currentStep];
+    }
+
+   int Ans = CountWays(currentStep+1,nthStep,DP) + CountWays(currentStep+2,nthStep,DP);
+   DP[currentStep] = Ans;
+   return Ans;
+}
+
+// With Recursion
+int ClimbStairs(int n )
+{
+    // initialie vec
+    vector<int>DP(n,0);
+    return CountWays(0,n,DP);
+}
+
+
+
+// With For Loop    [ Optimized Time Complexity = O(N) Space Complexit = O(1) ] 
+int climbStairs(int n)
+{
+    if(n == 0 ||n == 1)
+    {
+        return 1;
+    }
+
+   int left_step  = 1;
+   int right_step = 1;
+
+    int  ways = 0;
+
+    for( int i=2; i<=n; i++)
+    {
+        ways = left_step + right_step;
+        right_step = left_step;
+        left_step = ways;
+    }
+    return ways;
+}
+
 
 
 
@@ -1755,8 +1852,13 @@ bool IsBipartite(vector<vector<int>> &graph)
 
 int main()
 {
-    vector<vector<int>> adj { {1,3},{0,2},{1,3},{0,2} };
+    // vector<vector<int>> adj { {1,3},{0,2},{1,3},{0,2} };
 
+    // vector<int> vec { 5 , 2 , 1 , 3 , 4 };
+
+    // QuickSort(vec,0,vec.size()-1);
+
+    // Display(vec);
     // adj[1].push_back(2);
     // adj[2].push_back(1);
     // adj[3].push_back(2);
@@ -1771,58 +1873,11 @@ int main()
     // adj[5].push_back(6);
     // adj[6].push_back(7);
     // adj[7].push_back(6);
-
-    // adj[1].push_back(2);
-    // adj[2].push_back(1);
-    // adj[2].push_back(5);
-    // adj[5].push_back(2);
-    // adj[5].push_back(6);
-    // adj[6].push_back(5);
-    // adj[6].push_back(7);
-    // adj[7].push_back(6);
-
-    // adj[0].push_back(1);
-    // adj[1].push_back(0);
-    // adj[0].push_back(2);
-    // adj[2].push_back(0);
-    // adj[0].push_back(3);
-    // adj[3].push_back(0);
-    // adj[3].push_back(2);
-    // adj[2].push_back(3);
-    // adj[2].push_back(1);
-    // adj[1].push_back(2);
-
-
     
-   cout<<IsBipartite(adj);
+   // cout<<IsBipartite(adj);
 
+    cout<<climbStairs(35);
 
-
-
-
-
-    
-    //
-    // vector<bool> visited ( 8,false);
-    //
-    // // queue<pair<int,int>> q;
-    //
-    //
-    // bool ispresent = false;
-    // for(int i=1; i<8; i++)
-    // {
-    //     // By BFS
-    //     if(!visited[i])
-    //     {
-    //         IsPresentLoop(ispresent,-1,i,adj,visited);
-    //         if(ispresent)
-    //         {
-    //             break;
-    //         }
-    //     }
-    // }
-    //
-    // cout<<ispresent;
 }
 
 

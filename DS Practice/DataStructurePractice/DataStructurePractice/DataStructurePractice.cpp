@@ -1846,38 +1846,106 @@ int climbStairs(int n)
 }
 
 
+// DSA Revision
+
+// Find Peak Element in Mountain Array 
+ int findPeakElement(vector<int>& nums)  // Time Complexity O(logn)  Space Complexity O(1)
+{
+    int start = 0;
+    int end = nums.size()-1;
+        
+    if(nums.size() == 1 )
+    {
+        return start;
+    }
+
+    int mid = -1;
+    while(start < end )
+    { 
+        mid = start+( end - start)/2;
+        
+        if(mid + 1 < nums.size() && nums.at(mid) < nums.at(mid+1))
+        {
+            start = mid +1;
+        }
+        else
+        {
+            end = mid;
+        }
+    }
+    return start;
+}
+
+
+// Separate all positive and negative elements in array
+void separateArrayElements(vector<int> &vec)       // Time Complexity O(n^2)  Space Complexity O(1)
+{
+    if(vec.size() == 1 ) { return; }
+
+    if(vec.size() == 2 ) { if(vec.at(0) > 0 && vec.at(1) < 0) { swap(vec.at(0),vec.at(1)); } return;  }
+
+    int ptr1;
+    for(ptr1 = 0; ptr1 < vec.size(); ptr1++)
+    {
+        if(( ptr1+1 < vec.size() ) && ( (vec.at(ptr1)<0 && vec.at(ptr1+1)>0) ||  ( vec.at(ptr1)>0 && vec.at(ptr1+1)>0 ) ) )
+        {
+            continue;
+        }
+
+        if(ptr1 +1 < vec.size() )
+        {
+            int negativeElementIndex = ptr1+1;
+            while( negativeElementIndex-1 >= 0 && vec.at(negativeElementIndex-1) > 0 )
+            {
+                swap(vec.at(negativeElementIndex),vec.at(negativeElementIndex-1));
+                negativeElementIndex--;
+            }
+        }
+    }   
+}
+
+
+
+
+
+// Find Missing number in array Containnng elementes 1 to n
+
+int MissingNumber(vector<int>& array, int n)   // Time Complexity O(n)  Space Complexity O(1)
+{
+   // Your code goes here
+
+    // Place elements on its correct position
+    for (int i=0; i<array.size(); i++)
+    {
+        if(array[i] == n)
+        {
+            continue;
+        }
+        while(array[i] != i+1 && array[i] < array.size())
+        {
+            swap(array.at(i), array.at(array[i]-1));
+        }
+    }
+
+    // Check All index has its proper element
+    for(int i=0; i<array.size(); i++)
+    {
+        if(array[i] != i+1)
+        {
+            return i+1;
+        }
+    }
+    return n;
+}
 
 
 
 
 int main()
 {
-    // vector<vector<int>> adj { {1,3},{0,2},{1,3},{0,2} };
+   vector<int> vec { 5,3,1,2 };
 
-    // vector<int> vec { 5 , 2 , 1 , 3 , 4 };
-
-    // QuickSort(vec,0,vec.size()-1);
-
-    // Display(vec);
-    // adj[1].push_back(2);
-    // adj[2].push_back(1);
-    // adj[3].push_back(2);
-    // adj[2].push_back(3);
-    // adj[3].push_back(4);
-    // adj[4].push_back(3);
-    // adj[2].push_back(5);
-    // adj[5].push_back(2);
-    // adj[4].push_back(5);
-    // adj[5].push_back(4);
-    // adj[6].push_back(5);
-    // adj[5].push_back(6);
-    // adj[6].push_back(7);
-    // adj[7].push_back(6);
-    
-   // cout<<IsBipartite(adj);
-
-    cout<<climbStairs(35);
-
+    cout<<MissingNumber(vec,5);
 }
 
 

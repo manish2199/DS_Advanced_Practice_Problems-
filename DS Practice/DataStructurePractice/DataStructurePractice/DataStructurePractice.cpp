@@ -1914,6 +1914,7 @@ int MissingNumber(vector<int>& array, int n)   // Time Complexity O(n)  Space Co
 {
    // Your code goes here
 
+    // Approach Using Cyclic Sort 
     // Place elements on its correct position
     for (int i=0; i<array.size(); i++)
     {
@@ -1939,13 +1940,115 @@ int MissingNumber(vector<int>& array, int n)   // Time Complexity O(n)  Space Co
 }
 
 
+// 0 1 2 3 4    N = 5 
+// 2 3 1 2 3
+// 1 3 2 2 3
+// 3 1 2 2 3
+// 2 1 2 3 3
 
+void PrintNumberOfOccurance(vector<int> vec)   // Array Contains elements 0 to n-1    // Time Complexity - O(n) Space Complexity - O(1)
+{
+    // Approach - Cyclic Sort
+    int ptr1;
+    for(ptr1=0; ptr1<vec.size(); ptr1++)
+    {
+        while( (ptr1 != vec.at(ptr1)) && vec.at(ptr1) != vec.at(vec.at(ptr1)) )
+        {
+           swap(vec.at(ptr1),vec.at(vec.at(ptr1)));   
+        }
+    }
+
+    // Print All Elements whoose occur. is more than 1
+    for(ptr1= 0; ptr1 < vec.size(); ptr1++)
+    {
+        if(ptr1 != vec.at(ptr1))
+        {
+            cout<<"[ "<<vec.at(ptr1)<<" ]"<<endl;
+        }
+    }
+    cout<<"-1";
+}
+
+
+
+
+// Find Peak Elements in Array Containning Multiple peaks                //  LeetCode Solution Link = https://leetcode.com/problems/find-peak-element/submissions/841860636/
+int FindPeakElement(vector<int>& nums)
+{
+        int start = 0;
+    int end = nums.size()-1;
+
+    int mid = 0;
+    while(start < end )
+    { 
+        mid = start+( end - start)/2;
+        
+        if( (mid-1 >0 && nums.at(mid-1) < nums.at(mid) && mid+1<nums.size() && nums.at(mid)>nums.at(mid+1)))
+        {
+            return mid;
+        }
+
+         if(mid + 1 < nums.size() && nums.at(mid) < nums.at(mid+1))
+        {
+            start = mid +1;
+        }
+
+        if( mid+1 < nums.size() &&nums.at(mid) >nums.at(mid+1))
+        {
+            end = mid;
+        }
+    }
+    return start;
+};
+
+
+
+//    p1  p1 p2
+//   
+// 1, 3, -1, 2, -7, -5, 11, 6
+
+void Swap(int arr[],int first,int second)
+{
+    int temp = arr[first];
+    arr[first] = arr[second];
+    arr[second] = temp;
+}
+
+void Rearrange(int arr[], int n)
+{
+    // Your code goes here
+    if(n == 1 ) { return; }
+
+    if(n == 2) { Swap(arr,0,1); return; }
+
+    int ptr1 = 0;
+    int ptr2 = 1;
+    for(ptr1,ptr2; ptr1<n-1,ptr2<n; ptr1++,ptr2++)
+    {
+        while(ptr2 > 0 && arr[ptr2] > 0 && arr[ptr2-1] < 0 )
+        {
+            Swap(arr,ptr2,ptr2-1);
+            ptr2--;
+        }
+        ptr2 = ptr1+1;
+    }
+}
+ 
 
 int main()
 {
-   vector<int> vec { 5,3,1,2 };
+  // vector<int> vec { 2,3,1,2,3 };
+    
+ //   vector<int> vec { 5,4,3,2,1,0 };
 
-    cout<<MissingNumber(vec,5);
+     int arr[] = {1, -1, 3, 2, -7, -5, 11, 6};
+ 
+     Rearrange(arr,8);
+
+     for(int i =0; i<8; i++)
+     {
+         cout<<arr[i]<<" ";
+     }
 }
 
 
